@@ -54,9 +54,9 @@
     <div class="container">
       <?php
         if(isset($_POST['submitBtn'])) {
-          //UploadPhoto();
-          //Do a check for UploadPhoto - if it uploads a duplicate then do not UploadData
+          UploadPhoto();
           UploadData($photoName, $photoDate, $photographer, $location, $fileToUpload, $date);
+          ArrayData();
         }
 
         function UploadData($photoName, $photoDate, $photographer, $location, $fileToUpload, $date) {
@@ -69,9 +69,9 @@
             exit;
           }
 
-          $query = "INSERT INTO Images VALUES (?, ?, ?, ?)";
+          $query = "INSERT INTO Images VALUES (?, ?, ?, ?, ?)";
           $stmt = $db->prepare($query);
-          $stmt->bind_param('sdss', $photoName, $photoDate, $photographer, $location);
+          $stmt->bind_param('sssss', $photoName, $photoDate, $photographer, $location, $fileToUpload);
           $stmt->execute();
 
           if ($stmt->affected_rows > 0) {
@@ -81,6 +81,26 @@
               The image metadata was not added.</p>";
           }
           $db->close();     
+        }
+
+        function ArrayData() {
+          $db = new mysqli('mariadb', 'cs431s23', 'Va7Wobi9', 'cs431s23');
+          if (mysqli_connect_errno()) {
+             echo '<p>Error: Could not connect to database.<br/>
+             Please try again later.</p>';
+             exit;
+          }
+      
+          $query = mysqli_query($db, "SELECT * FROM Images");
+
+          $largeArr = array();
+          //Look through each row in the table
+          while($row = mysqli_fetch_assoc($query)){
+            //Adds each row into the array
+            $largeArr[] = $row;
+          }
+
+          return $largeArr;
         }
 
         function UploadPhoto() {
@@ -135,28 +155,29 @@
       ?>
     </div>
 
-    <div class="container">
-      <div class="row" style="padding-top: 25px;">
+    <div class="container py-4">
+      <div class="row" style="">
         <?php
-        // scan "uploads" folder and display files
-        $directory = "./uploads";
-        $results = scandir('./uploads');
 
-        foreach ($results as $result) {
-          if ($result === '.' or $result === '..') {
-            continue;
-          }
-          if (is_file($directory . '/' . $result)) {
-            echo '
-            <div class="col-md-3" style="padding-bottom: 25px; padding-top: 25px;">
-              <div class="thumbnail">
-                <img src="'.$directory . '/' . $result.'" alt="..." style="width:100%">
-                  <!-- <div class="caption">
-                    <p>'.$photoName.'<br>'.$photoDate.'<br>'.$photographer.'<br>'.$location.'</p>
-                  </div> -->
-              </div>
-            </div>';
-          }
+        $array = ArrayData();
+
+        $len = count($array);
+        for($row = 0; $row < $len; $row++) {
+          $pName = $array[$row]['photoName'];
+          $pDate = $array[$row]['photoDate'];
+          $name = $array[$row]['photographer'];
+          $loc = $array[$row]['photoLocation'];
+          $file = $array[$row]['fileToUpload'];
+
+          echo '
+          <div class="col-md-3" style="">
+            <div class="thumbnail border border-1 border-dark px-3">
+              <img src="./uploads/'. $file.'" alt="..." style="width:100%">
+                <div class="caption">
+                  <p><b>Photo Name: </b>'.$pName.'<br><b>Photo Date: </b>'.$pDate.'<br><b>Photographer: </b>'.$name.'<br><b>Location: </b>'.$loc.'</p>
+                </div>
+            </div>
+          </div>';
         }
         ?>
       </div>
