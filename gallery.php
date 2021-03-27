@@ -31,25 +31,26 @@
       <h3>View All Photos</h3>
       <div class="d-flex flex-row">
         <div style="padding-right: 10px;">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-              Sort By
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li><a class="dropdown-item">Name</a></li>
-              <li><a class="dropdown-item">Date action</a></li>
-              <li><a class="dropdown-item">Photographer</a></li>
-              <li><a class="dropdown-item">Location</a></li>
-            </ul>
-          </div>
-        </div>
-        <div style="padding-left: 10px;">
-          <form action="./index.html" method="post" enctype="multipart/form-data">
-            <button type="submit" class="btn btn-primary">Upload New Photo</button>
+          <!-- Dropdown Menu for sorting -->
+          <form action ="gallery.php" method = "post" >
+            <div class="dropdown">
+                <select class="form-control" id = "Sort" name = "Sort" onchange = this.form.submit();>
+                  <option>Sort By</option>
+                  <option value = "Name">Name</option>
+                  <option value = "Date Action">Date action</option>
+                  <option value = "Photographer">Photographer</option>
+                  <option value = "Location">Location</option>
+                </select>
+            </div>
           </form>
         </div>
+      <div style="padding-left: 10px;">
+        <form action="./index.html" method="post" enctype="multipart/form-data">
+          <button type="submit" class="btn btn-primary">Upload New Photo</button>
+        </form>
       </div>
     </div>
+  </div>
 
     <div class="container">
       <?php
@@ -158,8 +159,21 @@
     <div class="container py-4">
       <div class="row" style="">
         <?php
-
         $array = ArrayData();
+        $sortInput = $_POST["Sort"] ?? ''; //Null coalesce operator
+
+        if($sortInput === 'Name'){
+          array_multisort(array_column($array, 'photoName'), SORT_ASC, $array);
+        } 
+        else if($sortInput === 'Date Action'){
+          array_multisort(array_column($array, 'photoDate'), SORT_ASC, SORT_NUMERIC, $array);
+        } 
+        else if($sortInput === 'Photographer'){
+          array_multisort(array_column($array, 'photographer'), SORT_ASC, $array);
+        } 
+        else if($sortInput === 'Location'){
+          array_multisort(array_column($array, 'photoLocation'), SORT_ASC, $array);
+        }
 
         $len = count($array);
         for($row = 0; $row < $len; $row++) {
