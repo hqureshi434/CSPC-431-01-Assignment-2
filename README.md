@@ -8,12 +8,11 @@
 
 ### Introduction
 The goal of the assignment was to create a simple photo gallery web-app in PHP. The meta data for each photo should be stored in a database and then retrieved from the database. The web-app should satisfy these 4 use-cases:
-1. User uploads new photo to photo album including meta data (Name, Date, Location, Photographer)
+1. User uploads new photo to photo album. Meta data (Name, Date, Location, Photographer, File Name) is uploaded to the database in the Images table.
 2. User views all photos currently in photo album as gallery
 3. User chooses sorting method by selecting from choice of meta fields in dropdown
 4. User can choose to upload additional photos from gallery screen (back to upload form)
-We were able to successfully complete use cases 1, 2, and 4. We were unsuccessful in adding functionality to the "Sort By" dropdown in `gallery.php` and we were unsuccessul in displaying the meta data with each photo uploaded. There is also a known error where some images (with the correct file type) are unable to be uploaded in the web-app when we run the code on the school server. We did not implement a size limit for uploads, so we are not sure what is causing this error.
-
+We were able to successfully complete use cases 1, 2, 3, and 4. 
 ### Contribution breakdown:
 * `index.html` UI: Adam Laviguer
 * `gallery.php` UI: Hammad Qureshi
