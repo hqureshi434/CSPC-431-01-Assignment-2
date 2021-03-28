@@ -61,6 +61,7 @@
         }
 
         function UploadData($photoName, $photoDate, $photographer, $location, $fileToUpload, $date) {
+          //Establishes connection to the database
           @$db = new mysqli('mariadb', 'cs431s23', 'Va7Wobi9', 'cs431s23');
 
           // Check database connection
@@ -69,7 +70,8 @@
                   Please try again later.</p>";
             exit;
           }
-
+          
+          //Uploads the meta data to the database
           $query = "INSERT INTO Images VALUES (?, ?, ?, ?, ?)";
           $stmt = $db->prepare($query);
           $stmt->bind_param('sssss', $photoName, $photoDate, $photographer, $location, $fileToUpload);
@@ -85,7 +87,10 @@
         }
 
         function ArrayData() {
+          //Establishes connection to the database
           $db = new mysqli('mariadb', 'cs431s23', 'Va7Wobi9', 'cs431s23');
+
+          // Check database connection
           if (mysqli_connect_errno()) {
              echo '<p>Error: Could not connect to database.<br/>
              Please try again later.</p>';
@@ -162,6 +167,7 @@
         $array = ArrayData();
         $sortInput = $_POST["Sort"] ?? ''; //Null coalesce operator
 
+        //Sorts the gallery based on what user selected from the drop-down menu
         if($sortInput === 'Name'){
           array_multisort(array_column($array, 'photoName'), SORT_ASC, $array);
         } 
@@ -175,6 +181,7 @@
           array_multisort(array_column($array, 'photoLocation'), SORT_ASC, $array);
         }
 
+        //Displays the meta data underneath each photo
         $len = count($array);
         for($row = 0; $row < $len; $row++) {
           $pName = $array[$row]['photoName'];
